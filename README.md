@@ -15,9 +15,7 @@ ___
 
 ```
 int main(){
-
 printf("hello World");
-
 }
 ```
 

@@ -12,7 +12,13 @@
 <script>
     const INPUT = document.getElementById("input");
     function myfunction(){
-        alert(INPUT.value);
+        if(INPUT.value === ''){
+            return;
+        }
+        else{
+            alert(INPUT.value);
+        }
+        
     }
 </script>
 </html>

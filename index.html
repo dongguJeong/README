@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input id="input" placeholder="ID">
+    <button onclick="myfunction()">버튼</button>
+</body>
+<script>
+    const INPUT = document.getElementById("input");
+    function myfunction(){
+        if(INPUT.value === ''){
+            return;
+        }
+        else{
+            alert(INPUT.value);
+        }
+        
+    }
+</script>
+</html>

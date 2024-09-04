@@ -1,5 +1,13 @@
 ## 9월 첫 주차 학습 내용 정리
 
+## postman 사용하기(express_demo 에서 확인)
+
+#### 수정사항
+
+* 전체 조회 api 추가
+* post 시 중복된 채널이름은 db에 추가 안 되도록 기능 수정
+* post로 데이터 추가 시 id를 하드코딩으로 지정하는 것이 아닌, db.size+1로 설정하게끔 변경
+
 ## ExpressJS의 구조
 
 router, handler를 따로 만들 필요 없이 개발 가능
@@ -230,10 +238,4 @@ map2.get('cc'); // undefined
 
 ```
 
-## postman 사용하기(express_demo 에서 확인)
 
-#### 수정사항
-
-* 전체 조회 api 추가
-* post 시 중복된 채널이름은 db에 추가 안 되도록 기능 수정
-* post로 데이터 추가 시 id를 하드코딩으로 지정하는 것이 아닌, db.size+1로 설정하게끔 변경

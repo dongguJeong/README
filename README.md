@@ -195,7 +195,7 @@ console.log(루피) // 선장
 
 키와 값의 쌍으로 이루어진 컬렉션(키값의 중복을 허용하지 않는다)
 
-````jsx
+```jsx
 const map = new Map(); // 빈 Map 생성
 
 

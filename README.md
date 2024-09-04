@@ -76,8 +76,159 @@ app.js 폴더
 
 각종 디펜던시가 적힌 package.json, package-lock.json이 있다
 
+## 디스트럭처링(비구조화)
+
+### 배열 디스트럭처링(비구조화)
+
+- 대괄호를 사용한다
+- 인덱스 순서대로 이루어진다
+- 길이가 같을 필요는 없다
+- REST 파라미터 사용 가능
+- 기본값 설정 가능
 
 
+```jsx
+const [one, two] = [1,2]
+console.log(one, two)  // 1  2
+
+const [one, two] = [1,2,3]
+console.log(one, two)  // 1  2
+
+// 이게 어떻게 가능할까 -> 희소 배열 !
+const [one,,three] = [1,2,3]
+console.log(one, three). // 1 3
+
+// 뒤에 것 다 받아오고 싶다면 REST 파라미터를 사용하자
+const [one,two,...아몰랑] = [1,2,3,4,5,6,7,8,9,10];
+console.log(아몰랑); // [3,4,5,6,7,8,9,10]
+
+// REST 파라미터는 맨 마지막에 사용해주자 => 중간에 사용하면 에러 발생
+const [one,two,...아몰랑,마지막] = [1,2,3,4,5,6,7,8,9,10];
+console.log(마지막); // Uncaught SyntaxError: Rest element must be last element
+
+// 기본값 할당
+const [one,two,three=3] = [1,2];
+console.log(three) // 3 
+
+//이미 값이 할당되어 있다면 기본값은 무시됨
+const [one,two,three=3] = [1,2,10];
+console.log(three) // 10 
+```
+
+### 객체 디스트럭처링
+
+- 중괄호를 사용한다
+- 순서는 상관없다
+- 이름 재설정 가능
+- 할당도 가능
+- 중첩되어 있어도 원하는 것만 쏙 빼낼 수 있다
+
+```jsx
+
+const book = {
+    title : "원피스",
+    price : 5000,
+    description : '해적왕'
+}
+
+const {title, price, description} = book;
+console.log(title) // '원피스'
+console.log(price) // 5000
+console.log(description) // '해적왕'
+
+// 순서가 바뀌어도 된다
+const { price, title} = book;
+console.log(title) // '원피스'
+console.log(price) // 5000
+
+```
+
+#### 이름바꾸기
+
+```jsx
+const {title : 제목, price : 가격} = book;
+console.log(제목); // 원피스
+console.log(가격) // 5000
+```
+
+#### 기본값 설정
+
+```jsx
+const {title, price, description, 완결 = false} = book;
+console.log(완결) // false
+```
+
+(마찬가지로 할당된 값이 있다면 기본값은 무시된다)
+
+```jsx
+const {title, price, description ='개노잼'} = book;
+console.log(description); // 해적왕
+```
+
+#### 중첩된 객체
+
+```jsx
+const book = {
+    title : "원피스",
+    price : 5000,
+    description : '해적왕',
+    character : {
+     루피 : '선장',
+     조로 : '부선장',
+     상디 : '요리사'
+    }
+}
+
+const {character : {루피} } = book;
+console.log(루피) // 선장 
+```
+
+## 자료구조 Map
+
+키와 값의 쌍으로 이루어진 컬렉션(키값의 중복을 허용하지 않는다)
+
+### 객체와의 차이점
+
+- 키값의 형태의 제한이 없다
+- 이터러블하다
+- length 대신 size를 사용하며, size는 인위적인 수정이 불가능하다
+
+키와 값의 쌍으로 이루어진 컬렉션(키값의 중복을 허용하지 않는다)
+
+````jsx
+const map = new Map(); // 빈 Map 생성
+
+
+const map2 = new Map([['key1','value1'], ['key2','value2']]);
+console.log(map2); 
+
+const map3 = new Map(['key1','value1']); // 오류
+const map3 = new Map([['key1', 'value1']]); // 정상 작동
+
+console.log(map2.size); // 크기 확인 
+
+map2.set('key3','value3'); // 값 추가 
+map2.set('key4','value5').set('key6','value6'); // 체이닝 가능
+
+const map7 = new Map(); // 객체도 추가 가능
+const aa = { name : 'aa' };
+const bb = { name : 'bb' };
+
+map7.set(aa,'aaa').set(bb,'bbb');
+console.log(map7); 
+//Map(2) { { name: 'aa' } => 'aaa', { name: 'bb' } => 'bbb' }
+
+// 값 불러오기
+console.log(map7.get(aa)); // aaa
+console.log(map7.get('cc')); // undefined
+
+// 삭제
+map2.delete('key3');
+console.log(map2);
+map2.delete('key1').delete('key2') ; // 오류
+map2.get('cc'); // undefined
+
+```
 
 ## postman 사용하기(express_demo 에서 확인)
 

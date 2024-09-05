@@ -35,8 +35,23 @@ app.post('/youtubers', function(req,res){
 })
 
 app.get("/youtubers",function(req,res)  {
-    const youtubers = Array.from(db.values());
-    res.json(youtubers)
+    if(db.size == 0){
+        res.json({msg : '등록된 유튜버가 없습니다'});
+    }
+    else{
+        const youtubers = Array.from(db.values());
+        res.json(youtubers);
+    }
+});
+
+app.delete("/youtubers" ,function(req,res){
+    if(db.size == 0){
+        res.json({msg : '등록된 유튜버가 없습니다'});
+    }
+    else{
+        db.clear();
+        res.json({msg : '전체 삭제 되었습니다'});
+    }
 });
 
 app.get('/youtubers/:id',function(req,res)  {
@@ -50,6 +65,36 @@ app.get('/youtubers/:id',function(req,res)  {
     }
 });
 
+app.delete("/youtubers/:id" ,function(req,res){
+    const {id} = req.params;
+    const youtuber = db.get(+id);
+    if(youtuber === undefined){
+        res.json({msg : '정보를 찾을 수 없습니다'});
+    }
+    else{
+        db.delete(+id);
+        res.json({msg : '삭제 되었습니다'});
+    }
+});
+
+app.put("/youtubers/:id" , function(req, res){
+    const {id} = req.params;
+    const youtuber = db.get(+id);
+    if(youtuber === undefined){
+        res.json({msg : '정보를 찾을 수 없습니다'});
+    }
+    else{
+    
+        db.set(+id,{
+            name : req.body.name ? req.body.name : youtuber.name, 
+            sub :req.body.sub ? req.body.sub : youtuber.sub , 
+            videoNum : req.body.videoNum ? req.body.videoNum : youtuber.videoNum
+        });
+
+        res.json({msg : '수정 되었습니다'});
+    }
+})
+
 app.get('/watch', function(req,res){
 
     //객체의 비구조화
@@ -62,3 +107,4 @@ app.get('/watch', function(req,res){
 
 
 app.listen(3000);
+

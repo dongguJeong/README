@@ -34,6 +34,8 @@ app.post('/youtubers', function(req,res){
     
 })
 
+app.get()
+
 app.get("/youtubers",function(req,res)  {
     if(db.size == 0){
         res.json({msg : '등록된 유튜버가 없습니다'});

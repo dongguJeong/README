@@ -9,25 +9,40 @@ db.set(1, {id : '123' , pwd : '123' , name : 'jdg'});
 db.set(2, {id : '789' , pwd : '789' , name : 'dddd'});
 let idx = 3;
 
+// 로그인
 app.post('/login',(req,res) => {
     const {id,pwd} = req.body;
 
+    let hasUserId = false;
+    let hasPwdId = false;
+
     let matchUser;
     db.forEach(user => {
-        if(user.id === id && user.pwd === pwd){
-            matchUser = user;
+        if(user.id === id){
+            hasUserId = true;
+            if(user.pwd === pwd){
+                hasPwdId = true;
+            }
         }
     })
     
-    if(matchUser){
+    if(hasPwdId && hasUserId){
         res.status(200).json({
             msg : `${matchUser.name}님 환영합니다`
         })
     }
     else{
-        res.status(404).json({
-            msg : '등록되지 않은 유저입니다'
-        }) 
+        if(!hasUserId){
+            res.status(404).json({
+                msg : '아이디를 확인해주세요'
+            }) 
+        }
+        else if(!hasPwdId){
+            res.status(404).json({
+                msg : '비밀번호를 확인해주세요'
+            }) 
+        }
+        
     }
 });
 

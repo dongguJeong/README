@@ -1,16 +1,13 @@
 const express = require('express');
-const app = express();
-app.use(express.json());
-
-app.listen(3000);
+const router = express.Router();
 
 const db = new Map();
-db.set(1, {id : '123' , pwd : '123' , name : 'jdg'});
-db.set(2, {id : '789' , pwd : '789' , name : 'dddd'});
+db.set('123', {id : '123' , pwd : '123' , name : 'jdg'});
+db.set('789', {id : '789' , pwd : '789' , name : 'dddd'});
 let idx = 3;
 
 // 로그인
-app.post('/login',(req,res) => {
+router.post('/login',(req,res) => {
     const {id,pwd} = req.body;
 
     let hasUserId = false;
@@ -22,6 +19,7 @@ app.post('/login',(req,res) => {
             hasUserId = true;
             if(user.pwd === pwd){
                 hasPwdId = true;
+                matchUser = user;
             }
         }
     })
@@ -38,7 +36,7 @@ app.post('/login',(req,res) => {
             }) 
         }
         else if(!hasPwdId){
-            res.status(404).json({
+            res.status(400).json({
                 msg : '비밀번호를 확인해주세요'
             }) 
         }
@@ -47,7 +45,7 @@ app.post('/login',(req,res) => {
 });
 
 // 회원가입
-app.post('/join',(req,res) => {
+router.post('/join',(req,res) => {
     const {id,pwd,name} = req.body;
     let dup = false;
     db.forEach(user => {
@@ -59,7 +57,7 @@ app.post('/join',(req,res) => {
     if(!id || !pwd || !name) dup = true;
 
     if(!dup){
-        db.set(idx++,{id,pwd,name});
+        db.set(id,{id,pwd,name});
         res.status(201).json({
             msg : `${name}님 환영합니다`
         })
@@ -72,11 +70,11 @@ app.post('/join',(req,res) => {
     
 });
 
-app.route('/users/:n')
+router.route('/users')
 .get(
     function(req,res){
-        const n = req.params.n;
-        const user = db.get(+n);
+        const {userId} = req.body;
+        const user = db.get(userId);
     
         if(user){
             res.status(201).json(user);
@@ -90,11 +88,11 @@ app.route('/users/:n')
 )
 .delete(
     function(req,res) {
-        const n = req.params.n;
-        const user = db.get(+n);
+        const {userId} = req.body;
+        const user = db.get(userId);
         
         if(user){
-            db.delete(+n);
+            db.delete(userId);
             res.status(201).json({
                 msg : `${user.id}가 삭제되었습니다`
             })
@@ -105,4 +103,7 @@ app.route('/users/:n')
             }) 
         }
     }
-)
+);
+
+module.exports = router;
+

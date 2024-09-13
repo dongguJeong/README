@@ -1,35 +1,21 @@
-## 9월 10일 백엔드 기초 마무리
+## 9월 13일 백엔드 기초 마무리
 
-
-```jsx
-const express = require('express');
-const app = express();
-app.use(express.json());
-app.listen(3000);
-
-const userRouter = require('./routes/users');
-const channelRouter = require('./routes/channels');
-app.use("/",userRouter);
-app.use("/channels",channelRouter);
+* mysql workspace 를 사용하면 gui로 db를 조작할 수 있다
+* 테이블의 속성을 수정하고 싶다면
+```sql
+ALTER TABLE users MODIFY id INT AUTO_INCREMENT
 ```
 
-https://velog.io/@nemo/node-middleware-next
+컬럼을 추가하고 싶다
+```sql
+ALTER TABLE posts ADD COLUMN updated_at DATETIME DEFAULT NOW()
+```
 
-use 함수를 사용하면 use 함수에 들어오는 인자를 미들웨어처럼 사용할 수 있다
+한국 시간으로 수정하기
+```sql
+SET time_zone = 'Asia/Seoul' ;
+```
 
-미들웨어를 사용하는 이유는 실제 로직이 처리되기 전에 중간 거름망으로 올바른 요청인지 먼저 처리할 수 있기 때문이다
-
-https://inpa.tistory.com/entry/EXPRESS-📚-라우터-Router
-
-`const router = express.Router();`
-
-Router 를 사용하면 라우팅을 보다 간결하게 사용할 수 있다
-
-https://programmingsummaries.tistory.com/340
-
-`module.exports = router;` 는 module 이란 객체의 exports 속성에 router를 추가하는 것이다. 
-
-app.use("/",userRouter);
-app.use("/channels",channelRouter);
-
-를 할 때마다 `module.exports` 를 갈아끼우고 있는 것이다
+```jsx
+datestring : true,
+```

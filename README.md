@@ -1,21 +1,25 @@
-## 9월 13일 백엔드 기초 마무리
+## 9월 23일 백엔드 기초 마무리
 
-* mysql workspace 를 사용하면 gui로 db를 조작할 수 있다
-* 테이블의 속성을 수정하고 싶다면
-```sql
-ALTER TABLE users MODIFY id INT AUTO_INCREMENT
+- sql 문에 값을 넣고 싶다면 ?를 사용하자
+
+```
+ const id = req.params.id;
+    const SQL = "SELECT * FROM channels where id = ?";
+    conn.query(SQL, id, function (err, results) {
+      if (results) {
+        res.json(results);
+      } else {
+        notFoundChannel();
+      }
+    });
 ```
 
-컬럼을 추가하고 싶다
-```sql
-ALTER TABLE posts ADD COLUMN updated_at DATETIME DEFAULT NOW()
-```
+- 값을 여러개 넣고 싶다면 배열을 사용하자
 
-한국 시간으로 수정하기
-```sql
-SET time_zone = 'Asia/Seoul' ;
 ```
-
-```jsx
-datestring : true,
+    const SQL = "INSERT INTO users (name,user_id, sub_num,video_cnt)";
+    const VALUES = [name, user_id, 0, 0];
+    conn.query(SQL, VALUES, function (err, results) {
+        res.status(200).json(results);
+    });
 ```

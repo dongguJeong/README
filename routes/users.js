@@ -34,17 +34,16 @@ router.post(
         return res.status(400).end();
       }
       const loginUser = results[0];
-      if (loginUser && loginUser.pwd === password) {
+      if (loginUser && loginUser.password === password) {
         //토큰 발급
         const token = jwt.sign(
           {
             email: loginUser.email,
-            name: loginUser.name,
           },
           process.env.PRIVATE_KEY,
           {
             expiresIn: "30m",
-            issuer: "dong",
+            issuer: "JWT",
           }
         );
 
@@ -56,7 +55,6 @@ router.post(
         console.log(token);
 
         res.status(200).json({
-          msg: "성공",
           token: token,
         });
       } else {
@@ -70,58 +68,59 @@ router.post(
 router.post(
   "/join",
   [
-    body("contact").notEmpty().isString().withMessage("전화번호 확인"),
-    body("name").notEmpty().isString().withMessage("이름 확인"),
     body("password").notEmpty().isString().withMessage("비번 확인"),
     body("email").notEmpty().isEmail().withMessage("이메일 확인"),
     validate,
   ],
   (req, res) => {
-    const { email, password, name, contact } = req.body;
-    const SQL = "INSERT INTO users (email,name,pwd,contact) VALUES (?,?,?,?)";
-    const VALUES = [email, name, password, contact];
+    const { email, password } = req.body;
+    const SQL = "INSERT INTO users (email,password) VALUES (?,?)";
+    const VALUES = [email, password];
     conn.query(SQL, VALUES, function (err, results) {
       if (err) {
         console.log(err);
         return res.status(400).end();
       }
-      res.status(200).json(results);
+      res.status(200);
     });
   }
 );
 
 router
-  .route("/users")
-  // 개별 조회
-  .get(
+  .route("/reset")
+  // 비밀번호 초기화 요청
+  .post(
     [body("email").notEmpty().isEmail().withMessage("이메일 확인"), validate],
-    function (req, res) {
+    (req, res) => {
       const { email } = req.body;
-      const SQL = "SELECT * FROM `users` where email = ?";
-      const VALUES = email;
+      const SQL = "SELECT FROM users where email=?";
+      const VALUES = [email];
       conn.query(SQL, VALUES, function (err, results) {
         if (err) {
           console.log(err);
           return res.status(400).end();
         }
-        res.status(200).json(results);
+        res.status(200);
       });
     }
   )
-  // 개별 삭제
-  .delete(
-    [body("email").notEmpty().isEmail().withMessage("이메일 확인"), validate],
-    function (req, res) {
-      const { email } = req.body;
-      const SQL = "DELETE FROM `users` where email = ?";
-      const VALUES = email;
-      conn.query(SQL, VALUES, function (err, results, fields) {
-        if (results.affectedRows == 0) {
+  // 비밀번호 초기화 요청
+  .put(
+    [
+      body("email").notEmpty().isEmail().withMessage("이메일 확인"),
+      body("password").notEmpty().isString().withMessage("비번 확인"),
+      validate,
+    ],
+    (req, res) => {
+      const { email, password } = req.body;
+      const SQL = "UPDATE users SET password=? where email=?";
+      const VALUES = [password, email];
+      conn.query(SQL, VALUES, function (err, results) {
+        if (err) {
+          console.log(err);
           return res.status(400).end();
-        } else {
-          res.status(200).json(results);
         }
-        res.status(200).json({ msg: "성공" });
+        res.status(200);
       });
     }
   );

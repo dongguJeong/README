@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const conn = require("../mariadb");
 const { body, validationResult, param, query } = require("express-validator");
-const { allBooks, bookDetail } = require("../controller/BookController");
+const { allCategory } = require("../controller/CategoryController");
 
 const validate = (req, res, next) => {
   const err = validationResult(req);
@@ -14,13 +14,6 @@ const validate = (req, res, next) => {
 };
 
 // 전체 도서 조회
-router.get("/", allBooks);
-
-// 개별 도서 조회
-router.get(
-  "/:id",
-  [param("id").isInt().withMessage("숫자"), validate],
-  bookDetail
-);
+router.get("/", allCategory);
 
 module.exports = router;

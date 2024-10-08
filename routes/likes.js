@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const conn = require("../mariadb");
 const { body, validationResult, param, query } = require("express-validator");
+const { removeLike, addLike } = require("../controller/likeController");
 
 const validate = (req, res, next) => {
   const err = validationResult(req);
@@ -15,38 +16,8 @@ const validate = (req, res, next) => {
 router
   .route("/:id")
   // 좋아요
-  .put(
-    [param("id").isInt().withMessage("숫자"), validate],
-    (req, res, next) => {
-      const { id } = req.params;
-      res.json("좋아요 추가");
-      //   let SQL = "UPDATE books SET liked=liked+1 WHERE id=?";
-      //   const VALUES = [id];
-
-      //   conn.query(SQL, VALUES, function (err, results) {
-      //     if (err) {
-      //       console.log(err);
-      //       return res.status(400).end();
-      //     }
-      //   });
-    }
-  )
+  .put([param("id").isInt().withMessage("숫자"), validate], addLike)
   // 좋아요 취소
-  .delete(
-    [param("id").isInt().withMessage("숫자"), validate],
-    (req, res, next) => {
-      const { id } = req.params;
-      res.json("좋아요 취소");
-      //   let SQL = "UPDATE books SET liked=liked+1 WHERE id=?";
-      //   const VALUES = [id];
-
-      //   conn.query(SQL, VALUES, function (err, results) {
-      //     if (err) {
-      //       console.log(err);
-      //       return res.status(400).end();
-      //     }
-      //   });
-    }
-  );
+  .delete([param("id").isInt().withMessage("숫자"), validate], removeLike);
 
 module.exports = router;

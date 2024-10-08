@@ -6,7 +6,8 @@ const allBooks = (req, res) => {
 
   let offset = limit * (currentPage - 1);
 
-  let sql = "SELECT * FROM books";
+  let sql =
+    "SELECT * ,(SELECT count(*) FROM likes WHERE liked_book_id=books.id) AS likes FROM books";
   let values = [];
 
   if (category_id && news) {
@@ -21,8 +22,10 @@ const allBooks = (req, res) => {
       " WHERE pub_date BETWEEN DATE_SUB(NOW(), INTERVAL 1 MONTH) AND NOW()";
   }
 
-  sql += " LIMIT ? OFFSET ?";
-  values.push(+limit, offset);
+  if (limit && offset) {
+    sql += " LIMIT ? OFFSET ?";
+    values.push(+limit, offset);
+  }
 
   conn.query(sql, values, (err, results) => {
     if (err) {
@@ -39,10 +42,13 @@ const allBooks = (req, res) => {
 
 // 개별 도서 조회
 const bookDetail = (req, res) => {
-  const { id } = req.params;
-  const SQL =
-    "SELECT * FROM books LEFT JOIN category ON books.category_id = category.id WHERE books.id=?";
-  const VALUES = id;
+  const { id: book_id } = req.params;
+  const { user_id } = req.body;
+  const SQL = `SELECT * ,
+    (SELECT count(*) FROM likes WHERE liked_book_id=books.id) AS likes,
+    (SELECT EXISTS (SELECT * FROM likes WHERE user_id = ? AND liked_book_id = ? )) AS liked 
+    FROM books LEFT JOIN category ON books.category_id = category.category_id WHERE books.id=?`;
+  const VALUES = [user_id, book_id, book_id];
   conn.query(SQL, VALUES, (err, results) => {
     if (err) {
       console.log(err);
